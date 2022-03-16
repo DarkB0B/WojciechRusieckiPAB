@@ -1,0 +1,26 @@
+{
+  "name": "WojciechRusieckiPAB",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarkB0B/WojciechRusieckiPAB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DarkB0B/WojciechRusieckiPAB/issues"
+  },
+  "homepage": "https://github.com/DarkB0B/WojciechRusieckiPAB#readme",
+  "dependencies": {
+    "@types/node": "^17.0.21",
+    "express": "^4.17.3",
+    "typescript": "^4.6.2"
+  },
+  "devDependencies": {},
+  "description": ""
+}
