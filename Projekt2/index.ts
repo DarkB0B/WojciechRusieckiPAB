@@ -15,14 +15,29 @@ const testNote: Note = new Note
     content : 'TestContent',
     createDate : date.toISOString(),
     tags : [],
-    id : Date.now()
+    id : 2
   })
 
 app.use(express.json())
 
-app.get('/note/:id', function (req: Request, res: Response) { //odczyt notatki
+app.get('/',function (req: Request, res: Response)
+{
+  try{
+  const allnotes: Note[] = []
+   notes.forEach(function(Note){
+  allnotes.push(Note)
+  })
+  res.status(200).send(allnotes)
+  
+}catch(e){
+res. status(500).send(e.message)
+}
+
+})
+
+app.get('/note/:id', function (req: Request, res: Response) { //get note by id
   var thisNoteId: number = +req.params.id
-  let note = notes.find(note => note.id == thisNoteId)
+  const note = notes.find(note => note.id === thisNoteId)
   note ?? res.send(404)
   res.status(200).send(note)
 })
@@ -48,22 +63,22 @@ else
 }
   
 })
-app.put('/note/:id', function (req: Request, res: Response)
-{
-  var thisNoteId: number = +req.params.id
-  let note = notes.find(note => note.id == thisNoteId)
-  note.title = 'ChangedTitle'
-  note ?? res.status(404)
-  res.status(204)
-})
-app.delete('/note/:id', function (req: Request, res: Response)
-{
-  var thisNoteId: number = +req.params.id
-  let note = notes.find(note => note.id == thisNoteId)
-  const index = notes.findIndex(object => {return object.id === note.id})
-  notes.splice(index,1)
-  note ?? res.status(400).send('Notatka nie istnieje')
-  res.status(204)
-})
+// app.put('/note/:id', function (req: Request, res: Response)
+// {
+//   var thisNoteId: number = +req.params.id
+//   let note = notes.find(note => note.id == thisNoteId)
+//   note.title = 'ChangedTitle'
+//   note ?? res.status(404)
+//   res.status(204)
+// })
+// app.delete('/note/:id', function (req: Request, res: Response)
+// {
+//   var thisNoteId: number = +req.params.id
+//   let note = notes.find(note => note.id == thisNoteId)
+//   const index = notes.findIndex(object => {return object.id === note.id})
+//   notes.splice(index,1)
+//   note ?? res.status(400).send('Notatka nie istnieje')
+//   res.status(204)
+// })
 
 app.listen(3000)
