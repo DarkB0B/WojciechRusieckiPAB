@@ -19,22 +19,28 @@ const testNote: Note = new Note
     tags : [],
     id : 2
   })
+notes.push(testNote)
 
 app.use(express.json())
 
-app.get('/',function (req: Request, res: Response)
-{
-  try{
-  const allnotes: Note[] = []
-   notes.forEach(function(Note){
-  allnotes.push(Note)
-  })
-  res.status(200).send(allnotes)
+// app.get('/',function (req: Request, res: Response)
+// {
+//   try{
+//   const allnotes: Note[] = []
+//    notes.forEach(function(Note){
+//   allnotes.push(Note)
+//   })
+//   res.status(200).send(allnotes)
   
-}catch(e){
-res. status(500).send(e.message)
-}
+// }catch(e){
+// res. status(500).send(e.message)
+// }
 
+// })
+app.get('/note', function (req:Request, res: Response){
+  var x = notes.find(function(note, index){ if(note.title == 'TestTitle'){return true}})
+  const y: string = x.title
+  res.send(y)
 })
 
 app.get('/note/:id', function (req: Request, res: Response) { //get note by id
@@ -65,14 +71,14 @@ else
 }
   
 })
-app.put('/note/:id', function (req: Request, res: Response)
-{
-  var thisNoteId: number = +req.params.id
-  let note = notes.find(note => note.id == thisNoteId)
-  note.title = 'ChangedTitle'
-  note ?? res.status(404)
-  res.status(204)
-})
+// app.put('/note/:id', function (req: Request, res: Response)
+// {
+//   var thisNoteId: number = +req.params.id
+//   let note = notes.find(note => note.id == thisNoteId)
+//   note.title = 'ChangedTitle'
+//   note ?? res.status(404)
+//   res.status(204)
+// })
 // app.delete('/note/:id', function (req: Request, res: Response)
 // {
 //   var thisNoteId: number = +req.params.id
