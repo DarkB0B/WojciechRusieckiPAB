@@ -5,6 +5,8 @@ import { Request, Response } from 'express'
 import { normalize } from 'path'
 import { Note } from './note'
 
+
+
 let notes: Note[] = []
 //let note = notes.find( note => note.id == 10)
 const app = express()
@@ -63,14 +65,14 @@ else
 }
   
 })
-// app.put('/note/:id', function (req: Request, res: Response)
-// {
-//   var thisNoteId: number = +req.params.id
-//   let note = notes.find(note => note.id == thisNoteId)
-//   note.title = 'ChangedTitle'
-//   note ?? res.status(404)
-//   res.status(204)
-// })
+app.put('/note/:id', function (req: Request, res: Response)
+{
+  var thisNoteId: number = +req.params.id
+  let note = notes.find(note => note.id == thisNoteId)
+  note.title = 'ChangedTitle'
+  note ?? res.status(404)
+  res.status(204)
+})
 // app.delete('/note/:id', function (req: Request, res: Response)
 // {
 //   var thisNoteId: number = +req.params.id
