@@ -80,7 +80,7 @@ app.post('/note', function (req: Request, res: Response) { //add new note
   }
 
 })
-app.put('/note/:id', function (req: Request, res: Response)
+app.put('/note/:id', function (req: Request, res: Response)//change title of note
 {
   var thisNoteId: number = +req.params.id
   let note = notes.find(note => note.id == thisNoteId)
@@ -90,14 +90,27 @@ app.put('/note/:id', function (req: Request, res: Response)
   // note ?? res.send(404)
   res.status(200).send(note)
 })
-// app.delete('/note/:id', function (req: Request, res: Response)
-// {
-//   var thisNoteId: number = +req.params.id
-//   let note = notes.find(note => note.id == thisNoteId)
-//   const index = notes.findIndex(object => {return object.id === note.id})
-//   notes.splice(index,1)
-//   note ?? res.status(400).send('Notatka nie istnieje')
-//   res.status(204)
-// })
+app.delete('/note/:id', function (req: Request, res: Response) // delete note
+{
+  var thisNoteId: number = +req.params.id
+  let note = notes.find(note => note.id == thisNoteId)
+  if(!note)
+  return res.status(404)
+  try 
+  {
+    const index = notes.map(object => object.id).indexOf(note.id)
+    notes.splice(index,1)
+    res.status(200).send('notatka została usunięta')
+  }
+  catch 
+  {
+  console.log("nie udało się znaleźć indexu notatki")
+  note ?? res.status(400).send('Notatka nie istnieje')
+  }
+  
+  
+  
+  
+})
 
 app.listen(3000)
