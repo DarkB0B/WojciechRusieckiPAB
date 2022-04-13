@@ -1,15 +1,16 @@
+import { Tag } from './tag'
 export class Note{
     title:string 
     content:string
     createDate: string
-    tags: string[]
+    tags: Tag[]
     id: number
-    constructor(x: Note)
+    constructor(x: Note,tags: Tag[])
     {
         this.title = x.title
         this.content = x.content
         this.createDate = x.createDate
-        this.tags = x.tags
+        this.tags = tags
         this.id = x.id
     }
 }

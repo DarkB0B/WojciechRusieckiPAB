@@ -4,6 +4,7 @@ import express from 'express'
 import { Request, Response } from 'express'
 import { normalize } from 'path'
 import { Note } from './note'
+import { Tag } from './tag'
 
 
 
@@ -13,19 +14,20 @@ const app = express()
 app.use(express.json())
 let notes: Note[] = []
 const date = new Date()
+const testTag:Tag = new Tag('test')
 const testNote: Note = new Note
   ({
     title: 'TestTitle',
     content: 'TestContent',
+    tags: Tag[],
     createDate: date.toISOString(),
-    tags: [],
     id: 2
   })
 notes.push(testNote)
 
 
 
-app.get('/note/all',function (req: Request, res: Response) //get all notes
+app.get('/notes',function (req: Request, res: Response) //get list all notes
 {
   try{
   const allnotes: Note[] = []
