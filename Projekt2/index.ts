@@ -25,21 +25,21 @@ notes.push(testNote)
 
 
 
-// app.get('/',function (req: Request, res: Response) //get all notes
-// {
-//   try{
-//   const allnotes: Note[] = []
-//    notes.forEach(function(Note){
-//   allnotes.push(Note)
-//   })
-//   res.status(200).send(allnotes)
+app.get('/note/all',function (req: Request, res: Response) //get all notes
+{
+  try{
+  const allnotes: Note[] = []
+   notes.forEach(function(Note){
+  allnotes.push(Note)
+  })
+  res.status(200).send(allnotes)
 
-// }catch(e){
-// res. status(500).send(e.message)
-// }
+}catch{
+  res.status(400).send("Wymagane pola notatki są puste")
+}
 
-// })
-app.get('/note', function (req: Request, res: Response) { //get test note
+})
+app.get('/note/test', function (req: Request, res: Response) { //get test note
 
   var x = notes.find(function (note: Note) {
     if (note.title == 'TestTitle'){
@@ -84,9 +84,10 @@ app.put('/note/:id', function (req: Request, res: Response)
 {
   var thisNoteId: number = +req.params.id
   let note = notes.find(note => note.id == thisNoteId)
-  
+  if(!note)
+  return res.status(404)
   note.title = req.body.newtitle
-   note ?? res.send(404)
+  // note ?? res.send(404)
   res.status(200).send(note)
 })
 // app.delete('/note/:id', function (req: Request, res: Response)
