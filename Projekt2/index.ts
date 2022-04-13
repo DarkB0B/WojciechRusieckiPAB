@@ -39,13 +39,17 @@ notes.push(testNote)
 // }
 
 // })
-app.get('/note', function (req: Request, res: Response) {
+app.get('/note', function (req: Request, res: Response) { //get test note
 
   var x = notes.find(function (note: Note) {
-    if (note.title == 'TestTitle')
+    if (note.title == 'TestTitle'){
+      console.log("test note was found")
       return true
-      else 
+    }
+      else {
+        console.log("test note wan't found")
       return false
+    }
   })
   res.send(x)
 })
@@ -56,7 +60,7 @@ app.get('/note/:id', function (req: Request, res: Response) { //get note by id
   note ?? res.send(404)
   res.status(200).send(note)
 })
-app.post('/note', function (req: Request, res: Response) { //dodanie nowej notatki
+app.post('/note', function (req: Request, res: Response) { //add new note
   if (req.body.title && req.body.content) {
 
     const date = new Date()
@@ -76,14 +80,15 @@ app.post('/note', function (req: Request, res: Response) { //dodanie nowej notat
   }
 
 })
-// app.put('/note/:id', function (req: Request, res: Response)
-// {
-//   var thisNoteId: number = +req.params.id
-//   let note = notes.find(note => note.id == thisNoteId)
-//   note.title = 'ChangedTitle'
-//   note ?? res.status(404)
-//   res.status(204)
-// })
+app.put('/note/:id', function (req: Request, res: Response)
+{
+  var thisNoteId: number = +req.params.id
+  let note = notes.find(note => note.id == thisNoteId)
+  
+  note.title = req.body.newtitle
+   note ?? res.send(404)
+  res.status(200).send(note)
+})
 // app.delete('/note/:id', function (req: Request, res: Response)
 // {
 //   var thisNoteId: number = +req.params.id
