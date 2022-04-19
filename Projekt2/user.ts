@@ -8,7 +8,7 @@ export class User
         this.token = token
     }
 
-    tokengenerator(login:string, haslo:string):string
+    static tokengenerator(login:string, haslo:string):string
     {
         const token = jwt.sign(login + haslo,'secret')
         return token
