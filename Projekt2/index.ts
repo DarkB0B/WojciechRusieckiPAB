@@ -5,18 +5,19 @@ import { Request, Response } from 'express'
 import { normalize } from 'path'
 import { Note } from './note'
 import { Tag } from './tag'
+import { User } from './user'
 
 
 
-
-//let note = notes.find( note => note.id == 10)
 const app = express()
 app.use(express.json())
 let notes: Note[] = []
 let tags: Tag[] = []
+let users: User[] = []
 const date = new Date()
 const testTag: Tag = new Tag('test')
 tags.push(testTag)
+
 const testNote: Note = new Note
   ({
     title: 'TestTitle',
@@ -193,5 +194,9 @@ app.delete('/tag/:id', function (req: Request, res: Response) // delete tag
     console.log("nie udało się znaleźć indexu tagu")
     tag ?? res.status(400).send('Tag nie istnieje')
   }
+})
+///////////////// USER //////////////
+app.post('/login', function(req: Request, res: Response){
+  
 })
 app.listen(3000)
