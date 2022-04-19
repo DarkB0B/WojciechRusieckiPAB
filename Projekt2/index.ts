@@ -197,6 +197,16 @@ app.delete('/tag/:id', function (req: Request, res: Response) // delete tag
 })
 ///////////////// USER //////////////
 app.post('/login', function(req: Request, res: Response){
-  
+  if(req.body.login && req.body.pass){
+  let pass:string = req.body.password
+  let login:string = req.body.login
+  let token:string = User.tokengenerator(login,pass)
+  const newuser: User = new User(token)
+  users.push(newuser)
+  res.status(200).send(token)
+  }
+  else{
+    return res.status(400)
+  }
 })
 app.listen(3000)
