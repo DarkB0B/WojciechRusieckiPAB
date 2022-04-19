@@ -5,12 +5,12 @@ export class Note{
     createDate: string
     tags: Tag[]
     id: number
-    constructor(x: Note,tags: Tag[])
+    constructor(x: Note)
     {
         this.title = x.title
         this.content = x.content
         this.createDate = x.createDate
-        this.tags = tags
+        this.tags = x.tags
         this.id = x.id
     }
 }
