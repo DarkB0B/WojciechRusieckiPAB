@@ -28,10 +28,19 @@ const testNote: Note = new Note
   })
 notes.push(testNote)
 
-
-
+function auth(token:any):boolean
+{
+  if(!token){return false}
+  if(users.find(user => user.token == token)){
+    return true
+}
+else{
+  return false
+}
+}
 app.get('/notes', function (req: Request, res: Response) //get list all notes
 {
+  if(auth(req.headers.authorization)){
   try {
     const allnotes: Note[] = []
     notes.forEach(function (Note) {
@@ -42,10 +51,14 @@ app.get('/notes', function (req: Request, res: Response) //get list all notes
   } catch {
     res.status(400).send("Wymagane pola notatki są puste")
   }
-
+  }
+  else 
+  {
+    res.status(401)
+  }
 })
 app.get('/note/test', function (req: Request, res: Response) { //get test note
-
+  if(auth(req.headers.authorization)){
   var x = notes.find(function (note: Note) {
     if (note.title == 'TestTitle') {
       console.log("test note was found")
@@ -57,15 +70,25 @@ app.get('/note/test', function (req: Request, res: Response) { //get test note
     }
   })
   res.send(x)
+}
+else{
+  res.send(401)
+}
 })
 
 app.get('/note/:id', function (req: Request, res: Response) { //get note by id
+  if(auth(req.headers.authorization)){
   var thisNoteId: number = +req.params.id
   const note = notes.find(note => note.id == thisNoteId)
   note ?? res.send(404)
   res.status(200).send(note)
+  }
+  else{
+    res.send(401)
+  }
 })
 app.post('/note', function (req: Request, res: Response) { //add new note
+  if(auth(req.headers.authorization)){
   if (req.body.title && req.body.content) {
 
     const date = new Date()
@@ -83,20 +106,31 @@ app.post('/note', function (req: Request, res: Response) { //add new note
   else {
     res.status(400).send("Wymagane pola notatki są puste")
   }
+}
+else{
+  res.send(401)
+}
 
 })
 app.put('/note/:id', function (req: Request, res: Response)//change title of note
+
 {
+  if(auth(req.headers.authorization)){
   var thisNoteId: number = +req.params.id
   let note = notes.find(note => note.id == thisNoteId)
   if (!note)
     return res.status(404)
   note.title = req.body.newtitle
-  // note ?? res.send(404)
+
   res.status(200).send(note)
+  }
+  else{
+    res.send(401)
+  }
 })
 app.delete('/note/:id', function (req: Request, res: Response) // delete note
 {
+  if(auth(req.headers.authorization)){
   var thisNoteId: number = +req.params.id
   let note = notes.find(note => note.id == thisNoteId)
   if (!note)
@@ -111,10 +145,10 @@ app.delete('/note/:id', function (req: Request, res: Response) // delete note
     console.log("nie udało się znaleźć indexu notatki")
     note ?? res.status(400).send('Notatka nie istnieje')
   }
-
-
-
-
+  }
+  else{
+    res.send(401)
+  }
 })
 
 
@@ -122,6 +156,7 @@ app.delete('/note/:id', function (req: Request, res: Response) // delete note
 //////////////////// TAGS //////////////////////////
 app.get('/tags', function (req: Request, res: Response) //get list all tags
 {
+  if(auth(req.headers.authorization)){
   try {
     const alltags: Tag[] = []
     tags.forEach(function (Tag) {
@@ -132,10 +167,13 @@ app.get('/tags', function (req: Request, res: Response) //get list all tags
   } catch {
     res.status(400).send("Wymagane pola notatki są puste")
   }
-
+  }
+  else{
+    res.send(401)
+  }
 })
 app.get('/tag/test', function (req: Request, res: Response) { //get test tag
-
+  if(auth(req.headers.authorization)){
   var x = tags.find(function (tag: Tag) {
     if (tag.name == 'TestName') {
       console.log("test tag was found")
@@ -147,15 +185,25 @@ app.get('/tag/test', function (req: Request, res: Response) { //get test tag
     }
   })
   res.send(x)
+}
+else{
+  res.send(401)
+}
 })
 
 app.get('/tag/:id', function (req: Request, res: Response) { //get tag by id
+  if(auth(req.headers.authorization)){
   var thisTagId: number = +req.params.id
   const tag = tags.find(tag => tag.id == thisTagId)
   tag ?? res.send(404)
   res.status(200).send(tag)
+  }
+  else{
+    res.send(401)
+  }
 })
 app.post('/tag', function (req: Request, res: Response) { //add new tag
+  if(auth(req.headers.authorization)){
   if (req.body.name) {
 
     const date = new Date()
@@ -166,10 +214,15 @@ app.post('/tag', function (req: Request, res: Response) { //add new tag
   else {
     res.status(400).send("Wymagane pola tagu są puste")
   }
+}
+else{
+  res.send(401)
+}
 
 })
 app.put('/tag/:id', function (req: Request, res: Response)//change name of tag
 {
+  if(auth(req.headers.authorization)){
   var thisTagId: number = +req.params.id
   let tag = tags.find(tag => tag.id == thisTagId)
   if (!tag)
@@ -177,9 +230,14 @@ app.put('/tag/:id', function (req: Request, res: Response)//change name of tag
   tag.name = req.body.newname
   // note ?? res.send(404)
   res.status(200).send(tag)
+  }
+  else{
+    res.send(401)
+  }
 })
 app.delete('/tag/:id', function (req: Request, res: Response) // delete tag
 {
+  if(auth(req.headers.authorization)){
   var thisTagId: number = +req.params.id
   let tag = tags.find(tag => tag.id == thisTagId)
   if (!tag)
@@ -194,10 +252,14 @@ app.delete('/tag/:id', function (req: Request, res: Response) // delete tag
     console.log("nie udało się znaleźć indexu tagu")
     tag ?? res.status(400).send('Tag nie istnieje')
   }
+}
+else{
+  res.send(401)
+}
 })
 ///////////////// USER //////////////
 app.post('/login', function(req: Request, res: Response){
-  if(req.body.login && req.body.pass){
+  if(req.body.login && req.body.password){
   let pass:string = req.body.password
   let login:string = req.body.login
   let token:string = User.tokengenerator(login,pass)
