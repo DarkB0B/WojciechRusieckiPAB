@@ -4,34 +4,32 @@ import express from 'express'
 import { Request, Response } from 'express'
 import { normalize } from 'path'
 import { Note } from './note'
+import { storagee } from './storagee'
 import { Tag } from './tag'
 import { User } from './user'
 
-
+let storage = new storagee
 
 const app = express()
 app.use(express.json())
-let notes: Note[] = []
-let tags: Tag[] = []
-let users: User[] = []
 const date = new Date()
 const testTag: Tag = new Tag('test')
-tags.push(testTag)
+storage.Store(testTag)
 
 const testNote: Note = new Note
   ({
     title: 'TestTitle',
     content: 'TestContent',
-    tags: tags,
+    tags: storage.tags,
     createDate: date.toISOString(),
     id: 2
   })
-notes.push(testNote)
+  storage.Store(testNote)
 
 function auth(token:string):boolean
 {
   console.log(token)
-  const user = users.find(user => user.token == token)
+  const user = storage.users.find(user => user.token == token)
   console.log(user)
   console.log(token)
   if(user){return true}
@@ -43,15 +41,13 @@ function auth(token:string):boolean
 
 //////////////////// Notes //////////////////////////
 
-app.get('/notes', function (req: Request, res: Response) //get list all notes
+app.get('/notes', function (req: Request, res: Response) //get list ofdx all notes
 {
   if(auth(req.headers.authorization ?? "123")){
   try {
-    const allnotes: Note[] = []
-    notes.forEach(function (Note) {
-      allnotes.push(Note) 
-    })
-    res.status(200).send(allnotes)
+    
+    
+    res.status(200).send(storage.notes)
 
   } catch {
     res.status(400).send("Wymagane pola notatki są puste")
@@ -64,7 +60,7 @@ app.get('/notes', function (req: Request, res: Response) //get list all notes
 })
 app.get('/note/test', function (req: Request, res: Response) { //get test note
   if(auth(req.headers.authorization ?? "123")){
-  var x = notes.find(function (note: Note) {
+  var x = storage.notes.find(function (note: Note) {
     if (note.title == 'TestTitle') {
       console.log("test note was found")
       return true
@@ -84,7 +80,7 @@ else{
 app.get('/note/:id', function (req: Request, res: Response) { //get note by id
   if(auth(req.headers.authorization ?? "123")){
   var thisNoteId: number = +req.params.id
-  const note = notes.find(note => note.id == thisNoteId)
+  const note = storage.notes.find(note => note.id == thisNoteId)
   note ?? res.send(404)
   res.status(200).send(note)
   }
@@ -102,10 +98,10 @@ app.post('/note', function (req: Request, res: Response) { //add new note
         title: req.body.title,
         content: req.body.content,
         createDate: date.toISOString(),
-        tags: tags,  //temp
+        tags: storage.tags,  //temp
         id: Date.now()
       })
-    notes.push(thisnote)
+      storage.Store(thisnote)
     res.status(200).send(thisnote)
   }
   else {
@@ -122,7 +118,7 @@ app.put('/note/:id', function (req: Request, res: Response)//change title of not
 {
   if(auth(req.headers.authorization ?? "123")){
   var thisNoteId: number = +req.params.id
-  let note = notes.find(note => note.id == thisNoteId)
+  let note = storage.notes.find(note => note.id == thisNoteId)
   if (!note)
     return res.status(404)
   note.title = req.body.newtitle
@@ -137,12 +133,12 @@ app.delete('/note/:id', function (req: Request, res: Response) // delete note
 {
   if(auth(req.headers.authorization ?? "123")){
   var thisNoteId: number = +req.params.id
-  let note = notes.find(note => note.id == thisNoteId)
+  let note = storage.notes.find(note => note.id == thisNoteId)
   if (!note)
     return res.status(404)
   try {
-    const index = notes.map(object => object.id).indexOf(note.id)
-    notes.splice(index, 1)
+    const index = storage.notes.map(object => object.id).indexOf(note.id)
+    storage.notes.splice(index, 1)
     res.status(200).send('notatka została usunięta')
   }
   catch
@@ -164,7 +160,7 @@ app.get('/tags', function (req: Request, res: Response) //get list all tags
   if(auth(req.headers.authorization ?? "123")){
   try {
     const alltags: Tag[] = []
-    tags.forEach(function (Tag) {
+    storage.tags.forEach(function (Tag) {
       alltags.push(Tag)
     })
     res.status(200).send(alltags)
@@ -179,7 +175,7 @@ app.get('/tags', function (req: Request, res: Response) //get list all tags
 })
 app.get('/tag/test', function (req: Request, res: Response) { //get test tag
   if(auth(req.headers.authorization ?? "123")){
-  var x = tags.find(function (tag: Tag) {
+  var x = storage.tags.find(function (tag: Tag) {
     if (tag.name == 'TestName') {
       console.log("test tag was found")
       return true
@@ -199,7 +195,7 @@ else{
 app.get('/tag/:id', function (req: Request, res: Response) { //get tag by id
   if(auth(req.headers.authorization ?? "123")){
   var thisTagId: number = +req.params.id
-  const tag = tags.find(tag => tag.id == thisTagId)
+  const tag = storage.tags.find(tag => tag.id == thisTagId)
   tag ?? res.send(404)
   res.status(200).send(tag)
   }
@@ -213,7 +209,7 @@ app.post('/tag', function (req: Request, res: Response) { //add new tag
 
     const date = new Date()
     const thistag: Tag = new Tag(req.body.name)
-    tags.push(thistag)
+    storage.tags.push(thistag)
     res.status(200).send(thistag)
   }
   else {
@@ -229,7 +225,7 @@ app.put('/tag/:id', function (req: Request, res: Response)//change name of tag
 {
   if(auth(req.headers.authorization ?? "123")){
   var thisTagId: number = +req.params.id
-  let tag = tags.find(tag => tag.id == thisTagId)
+  let tag = storage.tags.find(tag => tag.id == thisTagId)
   if (!tag)
     return res.status(404)
   tag.name = req.body.newname
@@ -244,12 +240,12 @@ app.delete('/tag/:id', function (req: Request, res: Response) // delete tag
 {
   if(auth(req.headers.authorization ?? "123")){
   var thisTagId: number = +req.params.id
-  let tag = tags.find(tag => tag.id == thisTagId)
+  let tag = storage.tags.find(tag => tag.id == thisTagId)
   if (!tag)
     return res.status(404)
   try {
-    const index = tags.map(object => object.id).indexOf(tag.id)
-    notes.splice(index, 1)
+    const index = storage.tags.map(object => object.id).indexOf(tag.id)
+    storage.notes.splice(index, 1)
     res.status(200).send('tag został usunięty')
   }
   catch
@@ -269,7 +265,7 @@ app.post('/login', function(req: Request, res: Response){ //creating token
   let login:string = req.body.login
   let token:string = User.tokengenerator(login,pass)
   const newuser: User = new User(token)
-  users.push(newuser)
+  storage.users.push(newuser)
   res.status(200).send(token)
   }
   else{
