@@ -13,18 +13,8 @@ let storage = new storagee
 const app = express()
 app.use(express.json())
 const date = new Date()
-const testTag: Tag = new Tag('test')
-storage.Store(testTag)
 
-const testNote: Note = new Note
-  ({
-    title: 'TestTitle',
-    content: 'TestContent',
-    tags: storage.tags,
-    createDate: date.toISOString(),
-    id: 2
-  })
-  storage.Store(testNote)
+
 
 function auth(token:string):boolean
 {
